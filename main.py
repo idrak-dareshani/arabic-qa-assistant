@@ -3,11 +3,11 @@ from utils.vector_store import create_vector_store, load_vector_store
 from utils.qa_engine import answer_question
 from utils.web_fallback import search_web, search_tool
 
-pdf_path = "data/Dream_Textbook.pdf"
-text = extract_text_from_pdf(pdf_path)
+#pdf_path = "data/Dream_Textbook.pdf"
+#text = extract_text_from_pdf(pdf_path)
 
 # Step 1: Create index
-db = create_vector_store(text)
+db = create_vector_store()
 
 # Step 2: Ask a question
 while True:

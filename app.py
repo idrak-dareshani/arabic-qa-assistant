@@ -1,12 +1,9 @@
 from flask import Flask, render_template, request
 from utils.web_fallback import search_tool
-from utils.pdf_vectorstore import load_and_index_pdf
-from utils.query_pdf import query_pdf
-from markupsafe import Markup
-import markdown
+from utils.vector_store import create_vector_store
+from utils.qa_engine import answer_question
 
-pdf_path = "data/Dream_Textbook.pdf"
-load_and_index_pdf(pdf_path)
+db = create_vector_store()
 
 app = Flask(__name__)
 
@@ -17,13 +14,12 @@ def index():
     user_input = ""
     if request.method == 'POST':
         user_input = request.form.get('question')
-        answer = query_pdf(user_input)
-        html_answer = Markup(markdown.markdown(answer))
+        answer = answer_question(db, user_input)
 
         if "more_info" in request.form:
             web_info = search_tool(user_input)
 
-    return render_template("index.html", question=user_input, answer=html_answer, web_info=web_info)
+    return render_template("index.html", question=user_input, answer=answer, web_info=web_info)
 
 if __name__ == '__main__':
     app.run(debug=True)
