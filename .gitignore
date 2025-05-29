@@ -1,5 +1,6 @@
 /.env
 /data
+/db
 /faiss_index
 /venv
 /__pycache__
