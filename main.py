@@ -1,7 +1,7 @@
-from pdf_loader import extract_text_from_pdf
-from vector_store import create_vector_store, load_vector_store
-from qa_engine import answer_question
-from web_fallback import search_web, search_tool
+from utils.pdf_loader import extract_text_from_pdf
+from utils.vector_store import create_vector_store, load_vector_store
+from utils.qa_engine import answer_question
+from utils.web_fallback import search_web, search_tool
 
 pdf_path = "data/Dream_Textbook.pdf"
 text = extract_text_from_pdf(pdf_path)
