@@ -1,0 +1,10 @@
+langchain 
+openai 
+faiss-cpu 
+tiktoken 
+requests
+pdfplumber 
+python-dotenv
+tavily-python
+langchain-openai
+langchain-community
