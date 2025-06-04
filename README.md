@@ -58,3 +58,7 @@ Contributions are welcome to enhance the assistant’s capabilities. Areas of in
 
 ## 📝 License
 This project is licensed under the GNU General Public License (GPL).
+
+---
+
+For issues, suggestions, or improvements, feel free to open a GitHub [Issue](https://github.com/idrak-dareshani/arabic-qa-assistant/issues).
