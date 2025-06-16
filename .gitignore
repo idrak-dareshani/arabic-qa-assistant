@@ -1,7 +1,4 @@
 /.env
-/data
-/db
-/faiss_index
-/venv
-/__pycache__
-utils/__pycache__
+/.venv
+/frontend/obj
+/backend/__pycache__
