@@ -1,19 +1,60 @@
 @page "/"
 @inject QAService QAService
 
-<h3>Ask a Grammar Question</h3>
+<div class="row mb-2">
+    <div class="col-10">
+        <h3>Ask a Grammar Question</h3>
+    </div>
+    <div class="col-2">
+        <NavLink class="btn btn-secondary float-end" href="/about">About</NavLink>
+    </div>
+</div>
 
-<input class="form-control mb-2" @bind="query" placeholder="e.g. What is i‘rāb?" />
-<button class="btn btn-primary" @onclick="Search" disabled="@isLoading">
-    @if (isLoading) { <span class="spinner-border spinner-border-sm"></span>  }
-    else { <text>Ask</text> }
-</button>
+<div class="row mb-2">
+    <div class="col">
+        <select class="form-select" @bind="selectedLevel">
+            <option value="">All Levels</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+        </select>
+    </div>
+    <div class="col">
+        <input class="form-control" placeholder="Filter by Section (optional)" @bind="selectedSection" />
+    </div>
+</div>
+<div class="row mb-2">
+    <div class="col-11">
+        <input class="form-control mb-2" @bind="query" placeholder="e.g. What is i‘rāb?" />
+    </div>
+    <div class="col-1">
+        <button class="btn btn-primary" @onclick="Search" disabled="@isLoading">
+            @if (isLoading)
+            {
+                <span class="spinner-border spinner-border-sm"> Loading...</span>
+            }
+            else
+            {
+                <text>Ask</text>
+            }
+        </button>
+    </div>
+</div>
+
+@if (hasError)
+{
+    <div class="alert alert-danger mt-3">
+        ⚠️ An error occurred while contacting the server. Please try again later.
+    </div>
+}
 
 @if (result != null && result.Sources != null && result.Sources.Count > 0)
 {
     <div class="alert alert-info mt-4">
         <h5>Answer</h5>
-        <p>@result.Answer</p>
+        <p style="white-space: pre-wrap; font-family: 'Scheherazade New', 'Amiri', serif;">
+            @result.Answer
+        </p>
     </div>
 
     <div class="card mt-3">
@@ -30,13 +71,17 @@
 }
 
 @code {
-    string ?query;
-    QAAnswer ?result;
+    bool hasError = false;
+    string? query;
+    QAAnswer? result;
     bool isLoading = false;
+    string? selectedLevel;
+    string? selectedSection;
 
     async Task Search()
     {
         isLoading = true;
+        hasError = false;
         result = null;
         if (string.IsNullOrWhiteSpace(query))
         {
@@ -46,11 +91,12 @@
         }
         try
         {
-            result = await QAService.GetAnswerAsync(query);
+            result = await QAService.GetAnswerAsync(query, selectedLevel, selectedSection);
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine("Error calling API: " + ex.Message);
+            hasError = true;
         }
 
         isLoading = false;

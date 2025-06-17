@@ -21,20 +21,24 @@ Answer:""",
     input_variables=["context", "question"]
 )
 
-# Initialize LLM
-llm = ChatOpenAI(temperature=0, model="gpt-4")
+def answer_question(query: str, filters: dict = None):
+    if filters:
+        def filter_fn(metadata):
+            for k, v in filters.items():
+                if k in metadata and v.lower() not in metadata[k].lower():
+                    return False
+            return True
+        retriever = db.as_retriever(search_kwargs={"k": 5, "filter": filter_fn})
+    else:
+        retriever = db.as_retriever(search_kwargs={"k": 5})
 
-# Build QA chain
-qa_chain = RetrievalQA.from_chain_type(
-    llm=llm,
-    retriever=db.as_retriever(search_kwargs={"k": 5}),
-    return_source_documents=True,
-    chain_type_kwargs={
-        "prompt": prompt
-    }
-)
+    # Build QA chain
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=ChatOpenAI(temperature=0, model="gpt-4"),
+        retriever=retriever,
+        return_source_documents=True
+    )
 
-def answer_question(query: str):
     result = qa_chain.invoke({"query": query})
     return {
         "answer": result["result"],

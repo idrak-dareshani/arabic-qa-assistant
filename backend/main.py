@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from qa_engine import answer_question
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -24,5 +24,15 @@ class QAAnswer(BaseModel):
     sources: List[Source]
 
 @app.get("/qa", response_model=QAAnswer)
-def get_qa(query: str = Query(...)):
-    return answer_question(query)
+def get_qa(
+    query: str = Query(...),
+    level: Optional[str] = Query(None),
+    section: Optional[str] = Query(None)
+):
+    filters = {}
+    if level:
+        filters['level'] = level.lower()
+    if section:
+        filters['section_title'] = section
+    
+    return answer_question(query, filters)

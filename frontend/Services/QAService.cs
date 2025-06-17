@@ -12,14 +12,17 @@ public class QAService
         _http = http;
     }
 
-    public async Task<QAAnswer> GetAnswerAsync(string query)
+    public async Task<QAAnswer> GetAnswerAsync(string query, string? level = null, string? section = null)
     {
         var encoded = Uri.EscapeDataString(query);
-        var result = await _http.GetFromJsonAsync<QAAnswer>($"http://localhost:8000/qa?query={encoded}");
-        if (result == null)
-        {
-            throw new System.Exception("Failed to retrieve QAAnswer from the service.");
-        }
+
+        var url = $"http://localhost:8000/qa?query={Uri.EscapeDataString(encoded)}";
+        if (!string.IsNullOrWhiteSpace(level))
+            url += $"&level={Uri.EscapeDataString(level)}";
+        if (!string.IsNullOrWhiteSpace(section))
+            url += $"&section={Uri.EscapeDataString(section)}";
+
+        var result = await _http.GetFromJsonAsync<QAAnswer>(url) ?? throw new System.Exception("Failed to retrieve QAAnswer from the service.");
         return result;
     }
 }
