@@ -2,8 +2,17 @@ from fastapi import FastAPI, Query
 from pydantic import BaseModel
 from typing import List
 from qa_engine import answer_question
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True, # Allows cookies to be sent
+    allow_methods=["*"],  # Allows all methods (GET, POST, etc. as needed)
+    allow_headers=["*"],  # Allows all headers
+)
 
 class Source(BaseModel):
     section_title: str

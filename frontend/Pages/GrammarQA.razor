@@ -1,15 +1,15 @@
-@page "/grammar-qa"
+@page "/"
 @inject QAService QAService
 
 <h3>Ask a Grammar Question</h3>
 
 <input class="form-control mb-2" @bind="query" placeholder="e.g. What is i‘rāb?" />
 <button class="btn btn-primary" @onclick="Search" disabled="@isLoading">
-    @if (isLoading) { <span class="spinner-border spinner-border-sm">Loading...</span>  }
+    @if (isLoading) { <span class="spinner-border spinner-border-sm"></span>  }
     else { <text>Ask</text> }
 </button>
 
-@if (result != null)
+@if (result != null && result.Sources != null && result.Sources.Count > 0)
 {
     <div class="alert alert-info mt-4">
         <h5>Answer</h5>
@@ -30,15 +30,20 @@
 }
 
 @code {
-    string query;
-    QAAnswer result;
+    string ?query;
+    QAAnswer ?result;
     bool isLoading = false;
 
     async Task Search()
     {
         isLoading = true;
         result = null;
-
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            Console.Error.WriteLine("Query cannot be empty.");
+            isLoading = false;
+            return;
+        }
         try
         {
             result = await QAService.GetAnswerAsync(query);

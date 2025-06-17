@@ -15,6 +15,11 @@ public class QAService
     public async Task<QAAnswer> GetAnswerAsync(string query)
     {
         var encoded = Uri.EscapeDataString(query);
-        return await _http.GetFromJsonAsync<QAAnswer>($"http://localhost:8000/qa?query={encoded}");
+        var result = await _http.GetFromJsonAsync<QAAnswer>($"http://localhost:8000/qa?query={encoded}");
+        if (result == null)
+        {
+            throw new System.Exception("Failed to retrieve QAAnswer from the service.");
+        }
+        return result;
     }
 }

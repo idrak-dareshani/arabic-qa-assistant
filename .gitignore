@@ -1,4 +1,5 @@
 /.env
 /.venv
+/frontend/bin
 /frontend/obj
 /backend/__pycache__
