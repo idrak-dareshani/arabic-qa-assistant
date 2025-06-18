@@ -2,4 +2,5 @@
 /.venv
 /frontend/bin
 /frontend/obj
+/frontend/dist
 /backend/__pycache__
