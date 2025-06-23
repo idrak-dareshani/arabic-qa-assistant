@@ -12,24 +12,28 @@ The assistant helps learners and researchers interactively explore the Bayyinah 
 
 ## 🏗️ Project Structure
 
-- **backend/**: Python backend using Flask, LangChain, FAISS, and HuggingFace for embeddings and retrieval-based QA.
-- **frontend/**: Blazor WebAssembly frontend for user interaction.
-- **data/**: Contains extracted text, metadata, and raw PDFs.
-- **kb/**: Stores chunked knowledge base and FAISS index files.
-- **utils/**: Python utilities for chunking, embedding, and PDF extraction.
+- **app.py**: Streamlit app for interactive QA.
+- **build_index.py**: Script for processing PDFs, chunking, and building the FAISS index.
+- **data/**: Contains extracted text, metadata, chunked data, indexes, and raw PDFs.
+  - **raw_pdfs/**: Original textbook PDFs.
+  - **chunked/**: Chunked JSON files for each level.
+  - **index/**: FAISS index and pickle files.
+  - **metadata/**: TOC and intro metadata.
+- **requirements.txt**: Python dependencies.
+- **.streamlit/**: Streamlit configuration.
+- **.env**: Environment variables (API keys, etc).
 
 ---
 
 ## 🛠 Technologies Used
 
 - **Python 3.13**
-- **Flask** – REST API for QA and search
+- **Streamlit** – Interactive web UI for QA
 - **LangChain** – Orchestrates document retrieval and LLM-based answering
 - **FAISS** – Fast vector similarity search for document retrieval
 - **HuggingFace Transformers** – For text embeddings
 - **OpenAI GPT-4** – For answer generation (via LangChain)
-- **PyPDF2** – PDF text extraction
-- **Blazor WebAssembly** – Modern C# frontend
+- **PyMuPDF (fitz)** – PDF text extraction
 
 ---
 
@@ -46,7 +50,10 @@ cd arabic-qa-assistant
 Create and activate a virtual environment:
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+# On Unix/macOS:
+source venv/bin/activate
+# On Windows:
+venv\Scripts\activate
 ```
 
 Install dependencies:
@@ -54,35 +61,26 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-### 3. Frontend Setup
-
-Navigate to the frontend directory and restore dependencies:
-```bash
-cd frontend
-dotnet restore
-```
-
 ---
 
 ## 🚀 Usage
 
-### Start the Backend API
+### 1. Build the Knowledge Base
 
-From the `backend/` directory:
+Before running the app, process the PDFs and build the FAISS index:
 ```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+python build_index.py
 ```
-This will start the Flask API server for QA.
 
-### Start the Frontend
+This will extract, chunk, and embed the textbook content, saving processed data in the `data/` directory.
 
-From the `frontend/` directory:
+### 2. Start the Streamlit App
+
 ```bash
-dotnet run
+streamlit run app.py
 ```
-This will launch the Blazor WebAssembly frontend.
 
-Open your browser and navigate to [http://localhost:5000](http://localhost:5000) (or the port shown in the terminal).
+Open your browser and navigate to the provided local URL (usually [http://localhost:8501](http://localhost:8501)).
 
 ---
 
